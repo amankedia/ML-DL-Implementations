@@ -29,12 +29,53 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# Fitting classifier to the Training set
-# Create your classifier here
+#Now, let's make the ANN
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+
+#Initializing the ANN
+classifier = Sequential()
+
+#Adding the input layer and the first hidden layer
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+
+# Adding the second hidden layer
+classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the output layer
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+
+# Compiling the ANN
+classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+#IF dependent variable is multicalss loss function is called categorical_crossentropy
+
+classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
+y_pred = (y_pred > 0.5)
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+
+'''
+Use our ANN model to predict if the customer with the following informations will leave the bank: 
+
+Geography: France
+Credit Score: 600
+Gender: Male
+Age: 40 years old
+Tenure: 3 years
+Balance: $60000
+Number of Products: 2
+Does this customer have a credit card ? Yes
+Is this customer an Active Member: Yes
+Estimated Salary: $50000
+So should we say goodbye to that customer ?'''
+
+new_prediction = classifier.predict(sc.transform(np.array([[0, 0, 600, 1, 40, 3, 6000, 2, 1, 1, 50000]])))
+new_prediction = (new_prediction > 0.5)
+
+
