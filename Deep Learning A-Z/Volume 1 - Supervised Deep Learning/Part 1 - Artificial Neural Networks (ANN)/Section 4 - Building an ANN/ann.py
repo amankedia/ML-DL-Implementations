@@ -33,6 +33,7 @@ X_test = sc.transform(X_test)
 import keras
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.layers import Dropout
 
 #Initializing the ANN
 classifier = Sequential()
@@ -40,8 +41,12 @@ classifier = Sequential()
 #Adding the input layer and the first hidden layer
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
 
+#To avoid overfitting, p signifies the percent of neurons to drop, 0.1 means 10%
+classifier.add(Dropout(p = 0.1))
+
 # Adding the second hidden layer
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dropout(p = 0.1))
 
 # Adding the output layer
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
